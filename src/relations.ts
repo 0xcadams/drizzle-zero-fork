@@ -1,12 +1,14 @@
 import {createSchema} from '@rocicorp/zero';
-import type {Many} from 'drizzle-orm';
+import type {Many} from 'drizzle-orm/_relations';
 import {
   createTableRelationsHelpers,
+  One,
+  Relations,
+} from 'drizzle-orm/_relations';
+import {
   getTableName,
   getTableUniqueName,
   is,
-  One,
-  Relations,
   Table,
 } from 'drizzle-orm';
 import type {
@@ -608,14 +610,14 @@ const drizzleZeroConfig = <
             relation?.config?.fields?.map(f =>
               getDrizzleColumnKeyFromColumnName({
                 columnName: f?.name,
-                table: f.table,
+                table: tableOrRelations.table,
               }),
             ) ?? [];
           destFieldNames =
             relation?.config?.references?.map(f =>
               getDrizzleColumnKeyFromColumnName({
                 columnName: f?.name,
-                table: f.table,
+                table: relation.referencedTable,
               }),
             ) ?? [];
         }
@@ -783,7 +785,7 @@ const findRelationSourceAndDestFields = (
             relationConfig.config?.references?.map(f =>
               getDrizzleColumnKeyFromColumnName({
                 columnName: f.name,
-                table: f.table,
+                table: relationConfig.referencedTable,
               }),
             ) ?? [];
 
@@ -791,7 +793,7 @@ const findRelationSourceAndDestFields = (
             relationConfig.config?.fields?.map(f =>
               getDrizzleColumnKeyFromColumnName({
                 columnName: f.name,
-                table: f.table,
+                table: relationConfig.sourceTable,
               }),
             ) ?? [];
 
@@ -813,7 +815,7 @@ const findRelationSourceAndDestFields = (
             relationConfig.config?.fields?.map(f =>
               getDrizzleColumnKeyFromColumnName({
                 columnName: f.name,
-                table: f.table,
+                table: relationConfig.sourceTable,
               }),
             ) ?? [];
 
@@ -821,7 +823,7 @@ const findRelationSourceAndDestFields = (
             relationConfig.config?.references?.map(f =>
               getDrizzleColumnKeyFromColumnName({
                 columnName: f.name,
-                table: f.table,
+                table: relationConfig.referencedTable,
               }),
             ) ?? [];
 
@@ -866,14 +868,14 @@ const findNamedSourceAndDestFields = (
               relationConfig.config?.fields?.map(f =>
                 getDrizzleColumnKeyFromColumnName({
                   columnName: f.name,
-                  table: f.table,
+                  table: relationConfig.sourceTable,
                 }),
               ) ?? [],
             sourceFieldNames:
               relationConfig.config?.references?.map(f =>
                 getDrizzleColumnKeyFromColumnName({
                   columnName: f.name,
-                  table: f.table,
+                  table: relationConfig.referencedTable,
                 }),
               ) ?? [],
           };
